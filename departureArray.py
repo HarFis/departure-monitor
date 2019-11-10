@@ -13,12 +13,18 @@ VT_secret = login.get('login','secret')
 VT_key = login.get ('login','key')
 
 vasttrafik = None
+#Busstop Säterigatan's ID
+saterigatan_id = 9021014006580000
+departureArray = []
 counter = 0
 starttime=time.time()
-direction_31bus = 'Hjalmar Brantingspl.'
+direction_31busA = 'Hjalmar Brantingspl.'
+direction_31busB = 'Eketräg. via Wieselgrenspl.'
+timeNowObj = datetime.now()
 
 
-def printDepOfTrack():
+def saveDep():
+    track = saterigatan_db[x]['track']
     rtTimeExist = True if 'rtTime' in saterigatan_db[x] else False
     rtOrPt = 'RT' if rtTimeExist==True else 'PT'
     departureTime = saterigatan_db[x]['rtTime'] if rtTimeExist else saterigatan_db[x]['time']
@@ -29,8 +35,20 @@ def printDepOfTrack():
                     minutesToLeave += MINUTES_IN_DAY
     mintuesToLeaveStr = ' ' +str(minutesToLeave).zfill(2) if minutesToLeave<=60 else '60+'
     busNumber = saterigatan_db[x]['sname']
-    direction =  direction_31bus if saterigatan_db[x]['direction'] == 'Hjalmar Brantingsplatsen via Lindholmen' else saterigatan_db[x]['direction']
-    print (departureTime +' ('+rtOrPt+')','Min: '+ mintuesToLeaveStr , 'Bus: '+ busNumber, direction,sep=' | ')
+    
+    if saterigatan_db[x]['sname'] == '31' and saterigatan_db[x]['track'] == 'A':
+        direction = direction_31busA
+    elif saterigatan_db[x]['sname'] == '31' and saterigatan_db[x]['track'] == 'B':
+        direction = direction_31busB
+    else:
+        direction = saterigatan_db[x]['direction']
+
+    #direction =  direction_31bus if saterigatan_db[x]['direction'] == 'Hjalmar Brantingsplatsen via Lindholmen' else saterigatan_db[x]['direction']
+    journeyTupel = (busNumber, direction, departureTime, mintuesToLeaveStr, rtTimeExist, track)
+    departureArray.append(journeyTupel)
+    #print (departureTime +' ('+rtOrPt+')','Min: '+ mintuesToLeaveStr , 'Bus: '+ busNumber, direction,sep=' | ')
+    #print (departureArray[0][2] +' ('+departureArray[0][3]+')','Min: '+ departureArray[0][4] , 'Bus: '+ departureArray[0][0], departureArray[0][1],sep=' | ')
+
 
 def screen_clear():
    _ = call('clear' if os.name =='posix' else 'cls')
@@ -39,17 +57,20 @@ def initializeConnection():
     try:
         global vasttrafik
         vasttrafik = PyTrafik.pytrafik.client.Client("json", VT_key, VT_secret)
+        time.sleep(15)
     except Exception as e:
-        print ("Authentication failure, exiting!")
+        print ("Authentication failure!")
         sys.exit(1)
+
+def printDep():
+    for y in range(0, len(departureArray)):
+        print (departureArray[y][2] +' ('+departureArray[y][3]+')','Min: '+ departureArray[y][4] , 'Bus: '+ departureArray[y][0], departureArray[y][1], 'Track: ' + departureArray[y][5], sep=' | ')
 
 
 initializeConnection()
-time.sleep(15)
 
 #saterigatan_id = vasttrafik.location_name('Säterigatan, Göteborg')[0]['id']
 
-saterigatan_id = 9021014006580000
 
 ##print((saterigatan_db))
 while (counter<=3):
@@ -58,13 +79,15 @@ while (counter<=3):
     saterigatan_db = vasttrafik.get_departures(saterigatan_id)
     for x in range (6):
         if(saterigatan_db[x]['track']=='A'):
-            printDepOfTrack()
-            
+            saveDep()
+    printDep()
+        
     print ('---------------')
-
+    departureArray = []
     for x in range (6):
         if(saterigatan_db[x]['track']=='B'):
-            printDepOfTrack()
+            saveDep()
+    printDep()
     time.sleep(30.0 - ((time.time() - starttime) % 30.0))
 
 time.sleep(15)
