@@ -3,12 +3,13 @@ import tkinter.font as tkFont
 from datetime import datetime
 import time
 
+
 timeNowObj = datetime.now()
 widths = [5, 20, 18, 10]
 colorsDep = ['LightSkyBlue1', 'LightSkyBlue2', 'LightSkyBlue1', 'LightSkyBlue2']
 
-testArray = ['ich', 'bin', 'halb', 'müde', False]
-
+#testArray = ['ich', 'bin', 'halb', 'müde', False]
+testArray = []
 
 class departureGUI:
     def __init__(self, master):
@@ -40,11 +41,13 @@ class departureGUI:
         self.min_label = Label(master, text="in Min", width=widths[3], bg='grey70')
         self.min_label.grid(row=1, column=3)        
 
-        for x in range (0, 4):
-            if x == 2 and testArray[4]==False:
-                Label(master, text=testArray[x], width=widths[x], fg='red3', bg=colorsDep[x]).grid(row=2, column=x)
-            else:
-                Label(master, text=testArray[x], width=widths[x], bg=colorsDep[x]).grid(row=2, column=x)
+        for y in range (0,len(testArray)):
+            print (y)
+            for x in range (0, 4):
+                if x == 2 and testArray[y][4]==False:
+                    Label(master, text=testArray[y][x], width=widths[x], fg='red3', bg=colorsDep[x]).grid(row=(2+y), column=x)
+                else:
+                    Label(master, text=testArray[y][x], width=widths[x], bg=colorsDep[x]).grid(row=(2+y), column=x)
 
         
         
@@ -60,10 +63,16 @@ class departureGUI:
         self.master.attributes("-fullscreen", False)
         #return "break" 
 
-root = Tk()
-#root.overrideredirect(True)
-#root.overrideredirect(False)
-root.attributes('-fullscreen',True)
+def start(Input):
+    print (Input)
+    global testArray
+    testArray = Input
+    print (testArray)
+    root = Tk()
+    #root.overrideredirect(True)
+    #root.overrideredirect(False)
+    root.attributes('-fullscreen',True)
 
-my_gui = departureGUI(root)
-root.mainloop()
+    my_gui = departureGUI(root)
+    #root.mainloop()
+    root.update()

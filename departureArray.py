@@ -5,6 +5,8 @@ import time
 import os
 import sys
 import configparser
+#from tinker import start
+import tinker
 
 #import secret and key from login.ini
 login = configparser.ConfigParser()
@@ -14,6 +16,7 @@ VT_key = login.get ('login','key')
 
 vasttrafik = None
 #Busstop Säterigatan's ID
+#saterigatan_id = vasttrafik.location_name('Säterigatan, Göteborg')[0]['id']
 saterigatan_id = 9021014006580000
 departureArray = []
 counter = 0
@@ -22,6 +25,18 @@ direction_31busA = 'Hjalmar Brantingspl.'
 direction_31busB = 'Eketräg. via Wieselgrenspl.'
 timeNowObj = datetime.now()
 
+
+def screen_clear():
+   _ = call('clear' if os.name =='posix' else 'cls')
+
+def initializeConnection():
+    try:
+        global vasttrafik
+        vasttrafik = PyTrafik.pytrafik.client.Client("json", VT_key, VT_secret)
+        time.sleep(15)
+    except Exception as e:
+        print ("Authentication failure!")
+        sys.exit(1)
 
 def saveDep():
     track = saterigatan_db[x]['track']
@@ -50,26 +65,15 @@ def saveDep():
     #print (departureArray[0][2] +' ('+departureArray[0][3]+')','Min: '+ departureArray[0][4] , 'Bus: '+ departureArray[0][0], departureArray[0][1],sep=' | ')
 
 
-def screen_clear():
-   _ = call('clear' if os.name =='posix' else 'cls')
-
-def initializeConnection():
-    try:
-        global vasttrafik
-        vasttrafik = PyTrafik.pytrafik.client.Client("json", VT_key, VT_secret)
-        time.sleep(15)
-    except Exception as e:
-        print ("Authentication failure!")
-        sys.exit(1)
-
 def printDep():
     for y in range(0, len(departureArray)):
-        print (departureArray[y][2] +' ('+departureArray[y][3]+')','Min: '+ departureArray[y][4] , 'Bus: '+ departureArray[y][0], departureArray[y][1], 'Track: ' + departureArray[y][5], sep=' | ')
+        #print (departureArray[y])
+        print (departureArray[y][2],'Min: '+ departureArray[y][3] , 'Bus: '+ departureArray[y][0], departureArray[y][1], 'Track: ' + departureArray[y][5], sep=' | ')
 
+def test():
+    return 'hammer'
 
 initializeConnection()
-
-#saterigatan_id = vasttrafik.location_name('Säterigatan, Göteborg')[0]['id']
 
 
 ##print((saterigatan_db))
@@ -77,10 +81,11 @@ while (counter<=3):
     screen_clear()
     counter +=1
     saterigatan_db = vasttrafik.get_departures(saterigatan_id)
+    departureArray = []
     for x in range (6):
         if(saterigatan_db[x]['track']=='A'):
             saveDep()
-    printDep()
+    tinker.start(departureArray)
         
     print ('---------------')
     departureArray = []
