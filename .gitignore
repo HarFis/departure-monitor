@@ -161,9 +161,22 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
+
 # Login file with Secret/Key
 login.ini
 *.ini
+
+
 
 # PyTrafik folder 
 PyTrafik/
