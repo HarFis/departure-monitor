@@ -176,7 +176,8 @@ $RECYCLE.BIN/
 login.ini
 *.ini
 
-
+# no json
+*.json
 
 # PyTrafik folder 
 PyTrafik/
