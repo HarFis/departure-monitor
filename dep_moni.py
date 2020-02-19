@@ -36,7 +36,7 @@ direction_31busB = 'Wieselgrenspl. (Eketräg.)'
 timeNowObj = datetime.now()
 
 # tkinter stuff - sizes and colors
-widths = [5, 20, 18, 10]
+widths = [5, 20, 14, 7]
 colorsDep1 = ['LightSkyBlue1', 'LightSkyBlue2', 'LightSkyBlue1', 'LightSkyBlue2']
 colorsDep2 = ['SkyBlue1', 'SkyBlue2', 'SkyBlue1', 'SkyBlue2']
 
