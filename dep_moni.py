@@ -1,5 +1,6 @@
 from tkinter import Tk, Label, Button, W
 import tkinter.font as tkFont
+import tkinter.ttk as ttkSep
 
 from datetime import datetime
 import time
@@ -29,13 +30,15 @@ departure_nonCoop = []
 VT_secret = None
 VT_key = None
 
-
-
 starttime=time.time()
 direction_31busA = 'Hjalmar Brantingspl.'
 direction_31busB = 'Wieselgrenspl. (Eketräg.)'
 timeNowObj = datetime.now()
 
+# tkinter stuff - sizes and colors
+widths = [5, 20, 18, 10]
+colorsDep1 = ['LightSkyBlue1', 'LightSkyBlue2', 'LightSkyBlue1', 'LightSkyBlue2']
+colorsDep2 = ['SkyBlue1', 'SkyBlue2', 'SkyBlue1', 'SkyBlue2']
 
 # import secret and key from login.ini   
 def getKeyNSecret():
@@ -132,18 +135,86 @@ def prepareData():
     # Get json from Västtrafik
     getDepartures()
     # Extract from json relevant data for monitor
+    global departure_Coop
+    global departure_nonCoop
     departure_Coop = extractDepartures('A')
     departure_nonCoop = extractDepartures('B')
-    print(departure_Coop)
+
+class departureGUI:
+    def __init__(self, master):
+        self.master = master
+        master.title("A simple GUI")
+        self.master.bind("<Escape>", self.end_fullscreen)
+        #specifies "self.font"
+        self.font = tkFont.Font(family="helvetica", size=20)
+        #sepecifies for all belonging to TextFont (other types: TkDefaultFont, TkTextFont, TkFixedFont)
+        self.default_font = tkFont.nametofont("TkTextFont")
+        self.default_font.configure(size=16)
+
+        self.time_label = Label(master, font=self.font, text="Current time: "+timeNowObj.strftime('%H:%M'))
+        self.time_label.grid(row=0, column=0, columnspan=2, sticky=W)
+
+        self.update_button = Button(master, text="Update", command=self.update)
+        self.update_button.grid(row=0, column = 3)
+
+        # BUSnr | Direction | Departure Time | in Min 
+        self.bus_label = Label(master, text="Bus", width=widths[0], bg='grey60')
+        self.bus_label.grid(row=1, column=0)
+
+        self.direction_label = Label(master, text="Direction", width=widths[1], bg='grey70')
+        self.direction_label.grid(row=1, column=1)
+
+        self.dep_label = Label(master, text="Departure", width=widths[2], bg='grey60')
+        self.dep_label.grid(row=1, column=2)
+
+        self.min_label = Label(master, text="in Min", width=widths[3], bg='grey70')
+        self.min_label.grid(row=1, column=3)  
+
+        self.departure_rows(departure_Coop,0)      
+
+        self.spacer = Label(master ,bg="snow", width=sum(widths)+2)
+        self.spacer.grid(row=3+len(departure_Coop), column=0, columnspan=7)
+        
+        # SEPARATOR CODE
+        #self.separator = ttkSep.Separator(master)
+        #self.separator.grid(column=0, row=3+len(departure_Coop), columnspan=4, sticky='ew')
+        
+        self.departure_rows(departure_nonCoop,3+len(departure_Coop))      
 
 
+        #self.close_button = Button(master, text="Close", command=master.quit)
+        #self.close_button.grid(row=1, column=3)
+
+    # parameters the departure array + shift of rows
+    def departure_rows(self, dep_info_array, row_shift):
+        for y in range (0,len(dep_info_array)):
+            print (y)
+            for x in range (0, 4):
+                if (y==0):
+                    Label(self.master, text=dep_info_array[y][x], width=widths[x], bg=colorsDep2[x]).grid(row=(2+y+row_shift), column=x)
+                else:
+                    Label(self.master, text=dep_info_array[y][x], width=widths[x], bg=colorsDep1[x]).grid(row=(2+y+row_shift), column=x)
 
 
+    def update(self):
+        print("Update!")
+
+    def end_fullscreen(self, event=None):
+        self.state = False
+        self.master.attributes("-fullscreen", False)
+        #return "break" 
 
 
+def start():  
+    root = Tk()
+    #root.overrideredirect(True)
+    #root.overrideredirect(False)
+    root.attributes('-fullscreen',True)
 
-
-
+    my_gui = departureGUI(root)
+    #updateScreen(my_gui)
+    root.mainloop()
+    #root.update()
 
 
 
@@ -154,7 +225,7 @@ def main():
     # Initialize the connection to the Vasttrafik public API. If not succesful the script will exit here
     initializeConnection()
     prepareData()
-
+    start()
 
 if __name__ == "__main__":
     main()
