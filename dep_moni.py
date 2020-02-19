@@ -146,10 +146,10 @@ class departureGUI:
         master.title("A simple GUI")
         self.master.bind("<Escape>", self.end_fullscreen)
         #specifies "self.font"
-        self.font = tkFont.Font(family="helvetica", size=22)
+        self.font = tkFont.Font(family="helvetica", size=18)
         #specifies for all belonging to TextFont (other types: TkDefaultFont, TkTextFont, TkFixedFont)
         self.default_font = tkFont.nametofont("TkTextFont")
-        self.default_font.configure(size=18)
+        self.default_font.configure(size=14)
 
         self.master.grid_columnconfigure(1, weight=2)
 
