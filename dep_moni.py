@@ -149,7 +149,7 @@ class departureGUI:
         self.font = tkFont.Font(family="helvetica", size=22)
         #specifies for all belonging to TextFont (other types: TkDefaultFont, TkTextFont, TkFixedFont)
         self.default_font = tkFont.nametofont("TkTextFont")
-        self.default_font.configure(size=20)
+        self.default_font.configure(size=18)
 
         self.master.grid_columnconfigure(1, weight=2)
 
@@ -160,16 +160,16 @@ class departureGUI:
         self.update_button.grid(row=0, column = 3)
 
         # BUSnr | Direction | Departure Time | in Min 
-        self.bus_label = Label(master, text="Bus", width=widths[0], bg='grey60')
+        self.bus_label = Label(master, font=self.default_font, text="Bus", width=widths[0], bg='grey60')
         self.bus_label.grid(row=1, column=0)
 
-        self.direction_label = Label(master, text="Direction", width=widths[1], bg='grey70')
+        self.direction_label = Label(master, font=self.default_font, text="Direction", width=widths[1], bg='grey70')
         self.direction_label.grid(row=1, column=1, sticky=E+W)
 
-        self.dep_label = Label(master, text="Departure", width=widths[2], bg='grey60')
+        self.dep_label = Label(master, font=self.default_font, text="Departure", width=widths[2], bg='grey60')
         self.dep_label.grid(row=1, column=2)
 
-        self.min_label = Label(master, text="in Min", width=widths[3], bg='grey70')
+        self.min_label = Label(master, font=self.default_font, text="in Min", width=widths[3], bg='grey70')
         self.min_label.grid(row=1, column=3)  
 
         self.departure_rows(departure_Coop,0)      
@@ -190,12 +190,11 @@ class departureGUI:
     # parameters the departure array + shift of rows
     def departure_rows(self, dep_info_array, row_shift):
         for y in range (0,len(dep_info_array)):
-            print (y)
             for x in range (0, 4):
                 if (y==0):
-                    Label(self.master, text=dep_info_array[y][x], width=widths[x], bg=colorsDep2[x]).grid(row=(2+y+row_shift), column=x, sticky=E+W)
+                    Label(self.master, font=self.default_font, text=dep_info_array[y][x], width=widths[x], bg=colorsDep2[x]).grid(row=(2+y+row_shift), column=x, sticky=E+W)
                 else:
-                    Label(self.master, text=dep_info_array[y][x], width=widths[x], bg=colorsDep1[x]).grid(row=(2+y+row_shift), column=x, sticky=E+W)
+                    Label(self.master, font=self.default_font, text=dep_info_array[y][x], width=widths[x], bg=colorsDep1[x]).grid(row=(2+y+row_shift), column=x, sticky=E+W)
 
 
     def update(self):
