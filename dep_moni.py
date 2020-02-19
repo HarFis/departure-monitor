@@ -1,4 +1,4 @@
-from tkinter import Tk, Label, Button, W
+from tkinter import Tk, Label, Button, N, S, E, W
 import tkinter.font as tkFont
 import tkinter.ttk as ttkSep
 
@@ -146,10 +146,12 @@ class departureGUI:
         master.title("A simple GUI")
         self.master.bind("<Escape>", self.end_fullscreen)
         #specifies "self.font"
-        self.font = tkFont.Font(family="helvetica", size=20)
-        #sepecifies for all belonging to TextFont (other types: TkDefaultFont, TkTextFont, TkFixedFont)
+        self.font = tkFont.Font(family="helvetica", size=22)
+        #specifies for all belonging to TextFont (other types: TkDefaultFont, TkTextFont, TkFixedFont)
         self.default_font = tkFont.nametofont("TkTextFont")
-        self.default_font.configure(size=16)
+        self.default_font.configure(size=20)
+
+        self.master.grid_columnconfigure(1, weight=2)
 
         self.time_label = Label(master, font=self.font, text="Current time: "+timeNowObj.strftime('%H:%M'))
         self.time_label.grid(row=0, column=0, columnspan=2, sticky=W)
@@ -162,7 +164,7 @@ class departureGUI:
         self.bus_label.grid(row=1, column=0)
 
         self.direction_label = Label(master, text="Direction", width=widths[1], bg='grey70')
-        self.direction_label.grid(row=1, column=1)
+        self.direction_label.grid(row=1, column=1, sticky=E+W)
 
         self.dep_label = Label(master, text="Departure", width=widths[2], bg='grey60')
         self.dep_label.grid(row=1, column=2)
@@ -172,12 +174,12 @@ class departureGUI:
 
         self.departure_rows(departure_Coop,0)      
 
-        self.spacer = Label(master ,bg="snow", width=sum(widths)+2)
+        self.spacer = Label(master, width=sum(widths)+2)
         self.spacer.grid(row=3+len(departure_Coop), column=0, columnspan=7)
         
         # SEPARATOR CODE
         #self.separator = ttkSep.Separator(master)
-        #self.separator.grid(column=0, row=3+len(departure_Coop), columnspan=4, sticky='ew')
+        #self.separator.grid(column=0, row=3+len(departure_Coop), columnspan=4, sticky=E+W)
         
         self.departure_rows(departure_nonCoop,3+len(departure_Coop))      
 
@@ -191,9 +193,9 @@ class departureGUI:
             print (y)
             for x in range (0, 4):
                 if (y==0):
-                    Label(self.master, text=dep_info_array[y][x], width=widths[x], bg=colorsDep2[x]).grid(row=(2+y+row_shift), column=x)
+                    Label(self.master, text=dep_info_array[y][x], width=widths[x], bg=colorsDep2[x]).grid(row=(2+y+row_shift), column=x, sticky=E+W)
                 else:
-                    Label(self.master, text=dep_info_array[y][x], width=widths[x], bg=colorsDep1[x]).grid(row=(2+y+row_shift), column=x)
+                    Label(self.master, text=dep_info_array[y][x], width=widths[x], bg=colorsDep1[x]).grid(row=(2+y+row_shift), column=x, sticky=E+W)
 
 
     def update(self):
