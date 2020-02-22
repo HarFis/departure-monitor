@@ -1,4 +1,4 @@
-from tkinter import Tk, Label, Button, N, S, E, W
+from tkinter import Tk, Label, Button, N, S, E, W, Frame
 import tkinter.font as tkFont
 import tkinter.ttk as ttkSep
 
@@ -21,7 +21,6 @@ mainThread = threading.current_thread()
 
 # set variables and times
 vasttrafik = None
-timeoutNTP = 1.0  # How much to wait for the NTP server's response in seconds
 # Busstop Säterigatan's ID
 # saterigatan_id = vasttrafik.location_name('Säterigatan, Göteborg')[0]['id']
 saterigatan_id = 9021014006580000
@@ -30,10 +29,12 @@ departure_nonCoop = []
 VT_secret = None
 VT_key = None
 
-starttime=time.time()
-direction_31busA = 'Hjalmar Brantingspl.'
+direction_31busA = 'Hj. Brantingspl.'
 direction_31busB = 'Wieselgrenspl. (Eketräg.)'
-timeNowObj = datetime.now()
+timeoutNTP = 1.5  # How much to wait for the NTP server's response in seconds
+guiRefreshRate = 45
+tokenTimeout = 3600  # How much time your token is valid (default is 3600 seconds, i.e. 1 hour)
+
 
 # tkinter stuff - sizes and colors
 widths = [5, 20, 11, 6]
@@ -92,6 +93,9 @@ def extractDepartures(track_side):
     # print(saterigatan_db)
     function_departure = []
     counter = 0
+    global now
+    (currentDate, currentTime) = getNTPTime()
+    now = currentTime
     for x in range(10):
         if(saterigatan_db[x]['track']==track_side):
             counter +=1
@@ -99,7 +103,8 @@ def extractDepartures(track_side):
             rtTimeExist = True if 'rtTime' in saterigatan_db[x] else False
             rtOrPt = 'RT' if rtTimeExist==True else 'PT'
             departureTime = saterigatan_db[x]['rtTime'] if rtTimeExist else saterigatan_db[x]['time']
-            minutesToLeave = int(((datetime.strptime(departureTime, "%H:%M") - datetime.strptime(timeNowObj.strftime('%H:%M'), "%H:%M")).total_seconds() / 60))
+            #minutesToLeave = int(((datetime.strptime(departureTime, "%H:%M") - datetime.strptime(currentTime.strftime('%H:%M'), "%H:%M")).total_seconds() / 60))
+            minutesToLeave = (int)((datetime.strptime(departureTime, "%H:%M") - datetime.strptime(currentTime, "%H:%M")).total_seconds() / 60)
             # meaning that the next departure time is on the next day
             if minutesToLeave < 0:
                 MINUTES_IN_DAY = 1440
@@ -143,49 +148,61 @@ def prepareData():
 class departureGUI:
     def __init__(self, master):
         self.master = master
-        master.title("A simple GUI")
+        # A list that will hold the temporary departure frames so to destroy them upon refreshing
+        self.departureRowFrames = []
+        self.currentlyDisplayedDepartures = [0]*2  # Used to decide whether to refresh the display
+
+        master.title("GUI")
         self.master.bind("<Escape>", self.end_fullscreen)
-        #specifies "self.font"
+
+        departuresFrame = Frame(master) 
+        departuresFrame.grid()
+        self.departuresFrame = departuresFrame
+
+
+    def populate_with_departures(self, departure_C, departure_nonC):
+        depFrame = Frame(self.departuresFrame)
+         #specifies "self.font"
         self.font = tkFont.Font(family="helvetica", size=18)
         #specifies for all belonging to TextFont (other types: TkDefaultFont, TkTextFont, TkFixedFont)
         self.default_font = tkFont.nametofont("TkTextFont")
         self.default_font.configure(size=14)
+        depFrame.grid_columnconfigure(1, weight=2)
 
-        self.master.grid_columnconfigure(1, weight=2)
-
-        self.time_label = Label(master, font=self.font, text="Current time: "+timeNowObj.strftime('%H:%M'))
+        self.time_label = Label(self.master, font=self.font, text="Current time: "+now)  # .strftime('%H:%M'))
         self.time_label.grid(row=0, column=0, columnspan=2, sticky=W)
 
-        self.update_button = Button(master, text="Update", command=self.update)
+        self.update_button = Button(self.master, text="Update", command=self.update)
         self.update_button.grid(row=0, column = 3)
 
         # BUSnr | Direction | Departure Time | in Min 
-        self.bus_label = Label(master, font=self.default_font, text="Bus", width=widths[0], bg='grey60')
+        self.bus_label = Label(self.master, font=self.default_font, text="Bus", width=widths[0], bg='grey60')
         self.bus_label.grid(row=1, column=0)
 
-        self.direction_label = Label(master, font=self.default_font, text="Direction", width=widths[1], bg='grey70')
+        self.direction_label = Label(self.master, font=self.default_font, text="Direction", width=widths[1], bg='grey70')
         self.direction_label.grid(row=1, column=1, sticky=E+W)
 
-        self.dep_label = Label(master, font=self.default_font, text="Departure", width=widths[2], bg='grey60')
+        self.dep_label = Label(self.master, font=self.default_font, text="Departure", width=widths[2], bg='grey60')
         self.dep_label.grid(row=1, column=2)
 
-        self.min_label = Label(master, font=self.default_font, text="in Min", width=widths[3], bg='grey70')
-        self.min_label.grid(row=1, column=3)  
+        self.min_label = Label(self.master, font=self.default_font, text="in Min", width=widths[3], bg='grey70')
+        self.min_label.grid(row=1, column=3) 
 
-        self.departure_rows(departure_Coop,0)      
+        self.departure_rows(departure_C,0)     
 
-        self.spacer = Label(master, width=sum(widths)+2)
-        self.spacer.grid(row=3+len(departure_Coop), column=0, columnspan=7)
+        self.spacer = Label(self.master, width=sum(widths)+2)
+        self.spacer.grid(row=2+len(departure_C), column=0, columnspan=7)
         
         # SEPARATOR CODE
         #self.separator = ttkSep.Separator(master)
         #self.separator.grid(column=0, row=3+len(departure_Coop), columnspan=4, sticky=E+W)
-        
-        self.departure_rows(departure_nonCoop,3+len(departure_Coop))      
-
+        self.departure_rows(departure_nonC,3+len(departure_C))      
+        # Add the newly created frame to a list so we can destroy it later when we refresh the departures
+        self.departureRowFrames.append(depFrame)
 
         #self.close_button = Button(master, text="Close", command=master.quit)
         #self.close_button.grid(row=1, column=3)
+
 
     # parameters the departure array + shift of rows
     def departure_rows(self, dep_info_array, row_shift):
@@ -197,8 +214,16 @@ class departureGUI:
                     Label(self.master, font=self.default_font, text=dep_info_array[y][x], width=widths[x], bg=colorsDep1[x]).grid(row=(2+y+row_shift), column=x, sticky=E+W)
 
 
+    # Destroy any existing frames containing departures that already exist
+    def resetDepartures(self):
+        for frame in self.departureRowFrames:
+            frame.destroy()
+        # Empty the list as we have destroyed everything that was included in it
+        self.departureRowFrames = []
+
     def update(self):
-        print("Update!")
+        print("update")
+        updateGui(my_gui)
 
     def end_fullscreen(self, event=None):
         self.state = False
@@ -206,13 +231,31 @@ class departureGUI:
         #return "break" 
 
 
+def updateGui(my_gui):
+    # Get the next trips from Vasttrafik's public API for the station we are interested in
+    prepareData()
+    print("inupdatemygui")
+    # Update the displayed departures if they are different to the ones currently displayed
+    if departure_Coop != my_gui.currentlyDisplayedDepartures[0] or departure_nonCoop != my_gui.currentlyDisplayedDepartures[1]:
+        my_gui.resetDepartures()  # Remove any already existing departures
+        my_gui.populate_with_departures(departure_Coop, departure_nonCoop)
+        my_gui.currentlyDisplayedDepartures[0] = departure_Coop
+        my_gui.currentlyDisplayedDepartures[1] = departure_nonCoop
+    
+    print(threading.enumerate)
+
+    if mainThread.is_alive():
+        threading.Timer(guiRefreshRate, updateGui, [my_gui]).start()
+
+
 def start():  
     root = Tk()
     #root.overrideredirect(True)
     #root.overrideredirect(False)
     root.attributes('-fullscreen',True)
-
+    global my_gui
     my_gui = departureGUI(root)
+    updateGui(my_gui)
     #updateScreen(my_gui)
     root.mainloop()
     #root.update()
@@ -225,7 +268,7 @@ def main():
     getKeyNSecret()
     # Initialize the connection to the Vasttrafik public API. If not succesful the script will exit here
     initializeConnection()
-    prepareData()
+    # prepareData()
     start()
 
 if __name__ == "__main__":
