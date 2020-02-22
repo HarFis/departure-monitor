@@ -21,7 +21,7 @@ mainThread = threading.current_thread()
 
 # set variables and times
 vasttrafik = None
-# Busstop Säterigatan's ID
+# Bus stop Säterigatan's ID
 # saterigatan_id = vasttrafik.location_name('Säterigatan, Göteborg')[0]['id']
 saterigatan_id = 9021014006580000
 departure_Coop = []
@@ -30,7 +30,7 @@ VT_secret = None
 VT_key = None
 
 direction_31busA = 'Hj. Brantingspl.'
-direction_31busB = 'Wieselgrenspl. (Eketräg.)'
+direction_31busB = 'Wieselg.pl. (Eketräg.)'
 timeoutNTP = 1.5  # How much to wait for the NTP server's response in seconds
 guiRefreshRate = 45
 tokenTimeout = 3600  # How much time your token is valid (default is 3600 seconds, i.e. 1 hour)
@@ -86,25 +86,24 @@ def initializeConnection():
         print (e)
         print ("Authentication failure!")
         sys.exit(1)
+    # We need to reinitialize the token after it's timed out
+    if mainThread.is_alive():
+        threading.Timer(tokenTimeout, initializeConnection).start()
+
 
 
 def extractDepartures(track_side):
     # print(track_side)
     # print(saterigatan_db)
     function_departure = []
-    counter = 0
-    global now
-    (currentDate, currentTime) = getNTPTime()
-    now = currentTime
+
     for x in range(10):
         if(saterigatan_db[x]['track']==track_side):
-            counter +=1
             track = saterigatan_db[x]['track']
             rtTimeExist = True if 'rtTime' in saterigatan_db[x] else False
             rtOrPt = 'RT' if rtTimeExist==True else 'PT'
             departureTime = saterigatan_db[x]['rtTime'] if rtTimeExist else saterigatan_db[x]['time']
-            #minutesToLeave = int(((datetime.strptime(departureTime, "%H:%M") - datetime.strptime(currentTime.strftime('%H:%M'), "%H:%M")).total_seconds() / 60))
-            minutesToLeave = (int)((datetime.strptime(departureTime, "%H:%M") - datetime.strptime(currentTime, "%H:%M")).total_seconds() / 60)
+            minutesToLeave = (int)((datetime.strptime(departureTime, "%H:%M") - datetime.strptime(now, "%H:%M")).total_seconds() / 60)
             # meaning that the next departure time is on the next day
             if minutesToLeave < 0:
                 MINUTES_IN_DAY = 1440
@@ -119,16 +118,19 @@ def extractDepartures(track_side):
             else:
                 direction = saterigatan_db[x]['direction']
 
-             #direction =  direction_31bus if saterigatan_db[x]['direction'] == 'Hjalmar Brantingsplatsen via Lindholmen' else saterigatan_db[x]['direction']
             journeyTupel = (busNumber, direction, departureTime, mintuesToLeaveStr, rtTimeExist, track)
-            function_departure.append(journeyTupel)
-            if counter==3:break
+            
+            if(minutesToLeave>0):
+                function_departure.append(journeyTupel)
+            if len(function_departure)==3:break
 
     return function_departure
 
 def getDepartures():
     # Get the current time and date from an NTP server as the host might not have an RTC
+    global now
     (currentDate, currentTime) = getNTPTime()
+    now = currentTime
     try:
         global saterigatan_db
         saterigatan_db = vasttrafik.get_departures(saterigatan_id, date=currentDate, time=currentTime)        
@@ -142,8 +144,8 @@ def prepareData():
     # Extract from json relevant data for monitor
     global departure_Coop
     global departure_nonCoop
-    departure_Coop = extractDepartures('A')
-    departure_nonCoop = extractDepartures('B')
+    departure_Coop = extractDepartures('B')
+    departure_nonCoop = extractDepartures('A')
 
 class departureGUI:
     def __init__(self, master):
@@ -162,11 +164,15 @@ class departureGUI:
 
     def populate_with_departures(self, departure_C, departure_nonC):
         depFrame = Frame(self.departuresFrame)
-         #specifies "self.font"
+         #specifies "self.font" for time/clock
         self.font = tkFont.Font(family="helvetica", size=18)
         #specifies for all belonging to TextFont (other types: TkDefaultFont, TkTextFont, TkFixedFont)
         self.default_font = tkFont.nametofont("TkTextFont")
         self.default_font.configure(size=14)
+        # bold for "in min"
+        self.in_min_font = tkFont.Font(size=14, weight='bold')
+
+        
         depFrame.grid_columnconfigure(1, weight=2)
 
         self.time_label = Label(self.master, font=self.font, text="Current time: "+now)  # .strftime('%H:%M'))
@@ -175,44 +181,58 @@ class departureGUI:
         self.update_button = Button(self.master, text="Shutdown", command=self.update)
         self.update_button.grid(row=0, column = 2, columnspan=2, sticky=E)
 
-        # BUSnr | Direction | Departure Time | in Min 
-        self.bus_label = Label(self.master, font=self.default_font, text="Bus", width=widths[0], bg='grey60')
-        self.bus_label.grid(row=1, column=0)
-
-        self.direction_label = Label(self.master, font=self.default_font, text="Direction", width=widths[1], bg='grey70')
-        self.direction_label.grid(row=1, column=1, sticky=E+W)
-
-        self.dep_label = Label(self.master, font=self.default_font, text="Departure", width=widths[2], bg='grey60')
-        self.dep_label.grid(row=1, column=2)
-
-        self.min_label = Label(self.master, font=self.default_font, text="in Min", width=widths[3], bg='grey70')
-        self.min_label.grid(row=1, column=3, sticky=E+W) 
-
+        # label colums
+        self.label_columns("<- Direction <-", 1)
+        # departures on track A
         self.departure_rows(departure_C,0)     
 
+        # SPACE between directions CODE
         self.spacer = Label(self.master, width=sum(widths)+2)
         self.spacer.grid(row=2+len(departure_C), column=0, columnspan=7)
         
-        # SEPARATOR CODE
-        #self.separator = ttkSep.Separator(master)
-        #self.separator.grid(column=0, row=3+len(departure_Coop), columnspan=4, sticky=E+W)
-        self.departure_rows(departure_nonC,3+len(departure_C))      
+         # label colums
+        self.label_columns("-> Direction ->", 3+len(departure_C))
+        # departures on track B
+        self.departure_rows(departure_nonC,4+len(departure_C))
+
         # Add the newly created frame to a list so we can destroy it later when we refresh the departures
         self.departureRowFrames.append(depFrame)
 
-        #self.close_button = Button(master, text="Close", command=master.quit)
-        #self.close_button.grid(row=1, column=3)
+
+    def label_columns(self, direction, row_count):
+        # BUSnr | Direction | Departure Time | in Min 
+        self.bus_label = Label(self.master, font=self.default_font, text="Bus", width=widths[0], bg='grey60')
+        self.bus_label.grid(row=row_count, column=0)
+
+        self.direction_label = Label(self.master, font=self.default_font, text=direction, width=widths[1], bg='grey70')
+        self.direction_label.grid(row=row_count, column=1, sticky=E+W)
+
+        self.dep_label = Label(self.master, font=self.default_font, text="Departure", width=widths[2], bg='grey60')
+        self.dep_label.grid(row=row_count, column=2)
+
+        self.min_label = Label(self.master, font=self.default_font, text="in Min", width=widths[3], bg='grey70')
+        self.min_label.grid(row=row_count, column=3, sticky=E+W) 
 
 
     # parameters the departure array + shift of rows
     def departure_rows(self, dep_info_array, row_shift):
+        fore='black'
         for y in range (0,len(dep_info_array)):
             for x in range (0, 4):
-                if (y==0):
-                    Label(self.master, font=self.default_font, text=dep_info_array[y][x], width=widths[x], bg=colorsDep2[x]).grid(row=(2+y+row_shift), column=x, sticky=E+W)
+                if(x==3): # make "in Min" bold
+                    font1=self.in_min_font
+                    if(int(dep_info_array[y][x])<4): 
+                        # only few minutes, make "in Min" bold & red
+                        fore='firebrick3'
+                         
                 else:
-                    Label(self.master, font=self.default_font, text=dep_info_array[y][x], width=widths[x], bg=colorsDep1[x]).grid(row=(2+y+row_shift), column=x, sticky=E+W)
+                    fore='black'
+                    font1=self.default_font
 
+                if (y==0):
+                    Label(self.master, font=font1, text=dep_info_array[y][x], width=widths[x], fg=fore, bg=colorsDep2[x]).grid(row=(2+y+row_shift), column=x, sticky=E+W+N+S)
+                else:
+                    Label(self.master, font=font1, text=dep_info_array[y][x], width=widths[x], fg=fore, bg=colorsDep1[x]).grid(row=(2+y+row_shift), column=x, sticky=E+W+N+S)
 
     # Destroy any existing frames containing departures that already exist
     def resetDepartures(self):
@@ -244,7 +264,8 @@ def updateGui(my_gui):
         threading.Timer(guiRefreshRate, updateGui, [my_gui]).start()
 
 
-def start():  
+def start(): 
+    global root 
     root = Tk()
     #root.overrideredirect(True)
     #root.overrideredirect(False)
@@ -258,6 +279,7 @@ def start():
 
 
 def end():
+    root.destroy()
     os.system("sudo shutdown -h")
 
 def main():

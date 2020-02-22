@@ -6,7 +6,7 @@ I usually just left the house without checking. To avoid running, missing busses
 
 ## Hardware
 
-+ Raspberry Pi (Model B+)
++ Raspberry Pi (Model B+) with a USB Wifi dongle
 + 3.5" LCD (touch screen) display, ca. 19 EUR
 + ANSMANN 5024063 "energy saving socket", with time controlled countdown, ca. 12 EUR
 + LEGO case
