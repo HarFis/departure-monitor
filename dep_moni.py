@@ -172,8 +172,8 @@ class departureGUI:
         self.time_label = Label(self.master, font=self.font, text="Current time: "+now)  # .strftime('%H:%M'))
         self.time_label.grid(row=0, column=0, columnspan=2, sticky=W)
 
-        self.update_button = Button(self.master, text="Update", command=self.update)
-        self.update_button.grid(row=0, column = 3)
+        self.update_button = Button(self.master, text="Shutdown", command=self.update)
+        self.update_button.grid(row=0, column = 2, columnspan=2, sticky=E)
 
         # BUSnr | Direction | Departure Time | in Min 
         self.bus_label = Label(self.master, font=self.default_font, text="Bus", width=widths[0], bg='grey60')
@@ -186,7 +186,7 @@ class departureGUI:
         self.dep_label.grid(row=1, column=2)
 
         self.min_label = Label(self.master, font=self.default_font, text="in Min", width=widths[3], bg='grey70')
-        self.min_label.grid(row=1, column=3) 
+        self.min_label.grid(row=1, column=3, sticky=E+W) 
 
         self.departure_rows(departure_C,0)     
 
@@ -222,8 +222,8 @@ class departureGUI:
         self.departureRowFrames = []
 
     def update(self):
-        print("update")
-        updateGui(my_gui)
+        print("Shutdown")
+        end()
 
     def end_fullscreen(self, event=None):
         self.state = False
@@ -257,7 +257,8 @@ def start():
     #root.update()
 
 
-
+def end():
+    os.system("sudo shutdown -h")
 
 def main():
     # Read Key and Secret from login.ini
