@@ -37,7 +37,7 @@ tokenTimeout = 3600  # How much time your token is valid (default is 3600 second
 
 
 # tkinter stuff - sizes and colors
-widths = [5, 20, 11, 6]
+widths = [5, 18, 10, 6]
 colorsDep1 = ['LightSkyBlue1', 'LightSkyBlue2', 'LightSkyBlue1', 'LightSkyBlue2']
 colorsDep2 = ['SkyBlue1', 'SkyBlue2', 'SkyBlue1', 'SkyBlue2']
 
@@ -234,16 +234,12 @@ class departureGUI:
 def updateGui(my_gui):
     # Get the next trips from Vasttrafik's public API for the station we are interested in
     prepareData()
-    print("inupdatemygui")
     # Update the displayed departures if they are different to the ones currently displayed
     if departure_Coop != my_gui.currentlyDisplayedDepartures[0] or departure_nonCoop != my_gui.currentlyDisplayedDepartures[1]:
         my_gui.resetDepartures()  # Remove any already existing departures
         my_gui.populate_with_departures(departure_Coop, departure_nonCoop)
         my_gui.currentlyDisplayedDepartures[0] = departure_Coop
         my_gui.currentlyDisplayedDepartures[1] = departure_nonCoop
-    
-    print(threading.enumerate)
-
     if mainThread.is_alive():
         threading.Timer(guiRefreshRate, updateGui, [my_gui]).start()
 
