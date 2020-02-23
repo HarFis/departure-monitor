@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
 from tkinter import Tk, Label, Button, N, S, E, W, Frame
 import tkinter.font as tkFont
