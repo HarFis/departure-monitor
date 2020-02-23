@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 from tkinter import Tk, Label, Button, N, S, E, W, Frame
 import tkinter.font as tkFont
 import tkinter.ttk as ttkSep
@@ -252,7 +250,8 @@ class departureGUI:
 
     def update(self):
         print("Shutdown")
-        end()
+        shutdown_raspi()
+
 
     def end_fullscreen(self, event=None):
         self.state = False
@@ -287,9 +286,9 @@ def start():
     #root.update()
 
 
-def end():
+def shutdown_raspi():
     root.destroy()
-    os.system("sudo shutdown -h")
+    os.system("sudo shutdown -h now")
 
 def main():
     # Read Key and Secret from login.ini

@@ -21,8 +21,11 @@ I usually just left the house without checking. To avoid running, missing busses
 
 #### System
 
+#### Autostart
 
 ## Known Issues
+
++ long start time 
 
 ## Based on
 
