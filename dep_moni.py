@@ -19,6 +19,11 @@ import struct
 import threading
 from collections import defaultdict
 
+# Change working directory to the one that the file is residing in
+abspath = os.path.abspath(__file__)
+dname = os.path.dirname(abspath)
+os.chdir(dname)
+
 mainThread = threading.current_thread()
 
 # set variables and times
@@ -36,7 +41,6 @@ direction_31busB = 'Wieselg.pl. (Eketräg.)'
 timeoutNTP = 1.5  # How much to wait for the NTP server's response in seconds
 guiRefreshRate = 45
 tokenTimeout = 3600  # How much time your token is valid (default is 3600 seconds, i.e. 1 hour)
-
 
 # tkinter stuff - sizes and colors
 widths = [4, 18, 10, 6]
