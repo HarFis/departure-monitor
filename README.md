@@ -25,7 +25,8 @@ I usually just left the house without checking. To avoid running, missing busses
 
 ## Known Issues
 
-+ long start time 
++ long start time
++ incorrect sorted results (wrong order from API?) 
 
 ## Based on
 
