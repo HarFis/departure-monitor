@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 from tkinter import Tk, Label, Button, N, S, E, W, Frame
 import tkinter.font as tkFont
 import tkinter.ttk as ttkSep
