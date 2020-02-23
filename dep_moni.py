@@ -37,7 +37,7 @@ tokenTimeout = 3600  # How much time your token is valid (default is 3600 second
 
 
 # tkinter stuff - sizes and colors
-widths = [5, 18, 10, 6]
+widths = [4, 18, 10, 6]
 colorsDep1 = ['LightSkyBlue1', 'LightSkyBlue2', 'LightSkyBlue1', 'LightSkyBlue2']
 colorsDep2 = ['SkyBlue1', 'SkyBlue2', 'SkyBlue1', 'SkyBlue2']
 
@@ -221,10 +221,13 @@ class departureGUI:
             for x in range (0, 4):
                 if(x==3): # make "in Min" bold
                     font1=self.in_min_font
-                    if(int(dep_info_array[y][x])<4): 
-                        # only few minutes, make "in Min" bold & red
-                        fore='firebrick3'
-                         
+                    try:
+                        in_min_check=int(dep_info_array[y][x]) #catches '60+' dep. time to not crash system
+                        if(in_min_check<4): # only few minutes, make "in Min" bold & red
+                            fore='firebrick3'
+                    except:
+                        pass
+
                 else:
                     fore='black'
                     font1=self.default_font
