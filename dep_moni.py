@@ -113,7 +113,7 @@ def extractDepartures(track_side):
             if minutesToLeave < 0:
                 MINUTES_IN_DAY = 1440
                 minutesToLeave += MINUTES_IN_DAY
-            # mintuesToLeaveStr = ' ' +str(minutesToLeave).zfill(2) if minutesToLeave<=60 else '60+'
+            # minutesToLeaveStr = ' ' +str(minutesToLeave).zfill(2) if minutesToLeave<=60 else '60+'
             busNumber = saterigatan_db[x]['sname']
     
             if saterigatan_db[x]['sname'] == '31' and saterigatan_db[x]['track'] == 'A':
@@ -123,7 +123,7 @@ def extractDepartures(track_side):
             else:
                 direction = saterigatan_db[x]['direction']
 
-            journeyTupel = (busNumber, direction, departureTime, mintuesToLeaveStr, rtTimeExist, track)
+            journeyTupel = (busNumber, direction, departureTime, minutesToLeave, rtTimeExist, track)
             
             if(minutesToLeave>0):
                 function_departure.append(journeyTupel)
@@ -149,8 +149,13 @@ def prepareData():
     # Extract from json relevant data for monitor
     global departure_Coop
     global departure_nonCoop
-    departure_Coop = extractDepartures('B')
-    departure_nonCoop = extractDepartures('A')
+    departure_Coop = sort_after_dep(extractDepartures('B'))
+    departure_nonCoop = sort_after_dep(extractDepartures('A'))
+
+# data from Västtrafik not always in correct order (saying, not sorted by next departure). This fixes it.
+def sort_after_dep(tupel_array): 
+    tupel_array.sort(key = lambda x: x[3]) #sorts after "Minutes until next departure" = minutes to leave
+    return tupel_array
 
 class departureGUI:
     def __init__(self, master):
@@ -230,10 +235,8 @@ class departureGUI:
                         in_min_check=int(dep_info_array[y][x]) #catches '60+' dep. time to not crash system
                         if(in_min_check<5): # only few minutes until departure, make "in Min" bold & red
                             fore='firebrick3'
-                        if(in_min_check>60):
-                            dep_info_array[y][x]='60+'
                     except:
-                        pass
+                        pass #will throw (ignored) when departure time is more than 60 min in future
 
                 else:
                     fore='black'
