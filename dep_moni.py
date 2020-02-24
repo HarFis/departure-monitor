@@ -107,12 +107,13 @@ def extractDepartures(track_side):
             rtTimeExist = True if 'rtTime' in saterigatan_db[x] else False
             rtOrPt = 'RT' if rtTimeExist==True else 'PT'
             departureTime = saterigatan_db[x]['rtTime'] if rtTimeExist else saterigatan_db[x]['time']
+            # TODO: parsing should have try-except
             minutesToLeave = (int)((datetime.strptime(departureTime, "%H:%M") - datetime.strptime(now, "%H:%M")).total_seconds() / 60)
             # meaning that the next departure time is on the next day
             if minutesToLeave < 0:
                 MINUTES_IN_DAY = 1440
                 minutesToLeave += MINUTES_IN_DAY
-            mintuesToLeaveStr = ' ' +str(minutesToLeave).zfill(2) if minutesToLeave<=60 else '60+'
+            # mintuesToLeaveStr = ' ' +str(minutesToLeave).zfill(2) if minutesToLeave<=60 else '60+'
             busNumber = saterigatan_db[x]['sname']
     
             if saterigatan_db[x]['sname'] == '31' and saterigatan_db[x]['track'] == 'A':
@@ -227,8 +228,10 @@ class departureGUI:
                     font1=self.in_min_font
                     try:
                         in_min_check=int(dep_info_array[y][x]) #catches '60+' dep. time to not crash system
-                        if(in_min_check<4): # only few minutes, make "in Min" bold & red
+                        if(in_min_check<5): # only few minutes until departure, make "in Min" bold & red
                             fore='firebrick3'
+                        if(in_min_check>60):
+                            dep_info_array[y][x]='60+'
                     except:
                         pass
 
