@@ -105,6 +105,7 @@ def extractDepartures(track_side):
         if(saterigatan_db[x]['track']==track_side):
             track = saterigatan_db[x]['track']
             rtTimeExist = True if 'rtTime' in saterigatan_db[x] else False
+            # TODO: marking real-time vs schedule time times
             rtOrPt = 'RT' if rtTimeExist==True else 'PT'
             departureTime = saterigatan_db[x]['rtTime'] if rtTimeExist else saterigatan_db[x]['time']
             # TODO: parsing should have try-except
@@ -113,7 +114,7 @@ def extractDepartures(track_side):
             if minutesToLeave < 0:
                 MINUTES_IN_DAY = 1440
                 minutesToLeave += MINUTES_IN_DAY
-            # minutesToLeaveStr = ' ' +str(minutesToLeave).zfill(2) if minutesToLeave<=60 else '60+'
+            minutesToLeaveStr = ' ' +str(minutesToLeave).zfill(2) if minutesToLeave<=60 else '60+'
             busNumber = saterigatan_db[x]['sname']
     
             if saterigatan_db[x]['sname'] == '31' and saterigatan_db[x]['track'] == 'A':
@@ -123,7 +124,7 @@ def extractDepartures(track_side):
             else:
                 direction = saterigatan_db[x]['direction']
 
-            journeyTupel = (busNumber, direction, departureTime, minutesToLeave, rtTimeExist, track)
+            journeyTupel = (busNumber, direction, departureTime, minutesToLeaveStr, rtTimeExist, track, minutesToLeave)
             
             if(minutesToLeave>0):
                 function_departure.append(journeyTupel)
@@ -154,7 +155,7 @@ def prepareData():
 
 # data from Västtrafik not always in correct order (saying, not sorted by next departure). This fixes it.
 def sort_after_dep(tupel_array): 
-    tupel_array.sort(key = lambda x: x[3]) #sorts after "Minutes until next departure" = minutes to leave
+    tupel_array.sort(key = lambda x: x[6]) #sorts by "Minutes until next departure" = minutes to leave
     return tupel_array
 
 class departureGUI:
@@ -231,12 +232,8 @@ class departureGUI:
             for x in range (0, 4):
                 if(x==3): # make "in Min" bold
                     font1=self.in_min_font
-                    try:
-                        in_min_check=int(dep_info_array[y][x]) #catches '60+' dep. time to not crash system
-                        if(in_min_check<5): # only few minutes until departure, make "in Min" bold & red
-                            fore='firebrick3'
-                    except:
-                        pass #will throw (ignored) when departure time is more than 60 min in future
+                    if(dep_info_array[y][6]<5): # only few minutes until departure, make "in Min" bold & red
+                        fore='firebrick3'
 
                 else:
                     fore='black'
@@ -294,7 +291,9 @@ def start():
 
 def shutdown_raspi():
     root.destroy()
-    os.system("sudo shutdown -h now")
+    #os.system("sudo shutdown -h now")
+    os.system("sudo shutdown -h +1")
+
 
 def main():
     # Read Key and Secret from login.ini
