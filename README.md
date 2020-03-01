@@ -6,44 +6,46 @@ I usually just left the house without checking the schedule. To avoid running, m
 
 ## Hardware
 
-+ Raspberry Pi (Model B+) with a USB Wifi dongle
++ Raspberry Pi (Model B+) with an USB Wifi dongle
 + 3.5" LCD (touch screen) display, ca. 19 EUR
 + ANSMANN 5024063 "energy saving socket", with time controlled countdown, ca. 12 EUR
 + LEGO case
 
-## Software etc
-
-+ Raspbian with desktop
-+ python wrapper by Axel Niklasson: https://github.com/axelniklasson/PyTrafik
 
 ## API
 Departure monitor uses data from [Västtrafik's public API](https://developer.vasttrafik.se). After registration you can get your key & secret for authentication. Don't forget to "prenumera" your app for "reseplaneraren".
 
 ### Installation
 
+## System
+
++ Raspbian with desktop
+
 #### Screen
+
 Instructions: http://www.lcdwiki.com/3.5inch_RPi_Display
 
 #### Departure Monitor
+
 + clone: `git clone https://github.com/HarFis/departure-monitor.git`
 + clone inside the departure monitor folder: `https://github.com/axelniklasson/PyTrafik.git``
 + in main folder create `login.ini` in the following format with key & secret from Västtrafik and your busstop id:
-```[login]
+`[login]
 key = 1234567890
 secret = ABCDEFE
 [busstop]
-id = 0123456789```
+id = 0123456789`
 
 #### Autostart
 + Mark the script as executable: `chmod +x dep_moni.py`
 + follow this instructions (I used method 2): https://www.raspberrypi-spy.co.uk/2014/05/how-to-autostart-apps-in-rasbian-lxde-desktop/
 + autostart file - add or modify so it looks similar to this:
-```@lxpanel --profile LXDE-pi
+`@lxpanel --profile LXDE-pi
 @pcmanfm --desktop --profile LXDE-pi
 @point-rpi
 @/usr/bin/python3 /home/pi/departure-monitor/dep_moni.py
-@xscreensaver -no-splash```
-+ set up your raspberry pi to start into "desktop (with autologin)" - can be done in command line "sudo raspi-config" or in Raspbian (Preferences -> Raspberry Pi Configuration | Boot: to desktop | Autologin: Login as user 'pi' )
+@xscreensaver -no-splash`
++ set up your raspberry pi to start into "desktop (with autologin)" - can be done in command line `sudo raspi-config` or in Raspbian (Preferences -> Raspberry Pi Configuration | Boot: to desktop | Autologin: Login as user 'pi' )
 
 
 ## Known Issues
