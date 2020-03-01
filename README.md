@@ -11,21 +11,20 @@ I usually just left the house without checking the schedule. To avoid running, m
 + ANSMANN 5024063 "energy saving socket", with time controlled countdown, ca. 12 EUR
 + LEGO case
 
-
 ## API
 Departure monitor uses data from [Västtrafik's public API](https://developer.vasttrafik.se). After registration you can get your key & secret for authentication. Don't forget to "prenumera" your app for "reseplaneraren".
 
-### Installation
+## Installation
 
-## System
+### System
 
 + Raspbian with desktop
 
-#### Screen
+### Screen
 
 Instructions: http://www.lcdwiki.com/3.5inch_RPi_Display
 
-#### Departure Monitor
+### Departure Monitor
 
 + clone: `git clone https://github.com/HarFis/departure-monitor.git`
 + clone inside the departure monitor folder: `https://github.com/axelniklasson/PyTrafik.git``
@@ -38,10 +37,10 @@ secret = ABCDEFE
 id = 0123456789
 ```
 
-#### Autostart
+### Autostart
 + Mark the script as executable: `chmod +x dep_moni.py`
 + follow this instructions (I used method 2): https://www.raspberrypi-spy.co.uk/2014/05/how-to-autostart-apps-in-rasbian-lxde-desktop/
-+ autostart file - add or modify so it looks similar to this:
++ `autostart` file: add or modify so it looks similar to this:
 ```
 @lxpanel --profile LXDE-pi
 @pcmanfm --desktop --profile LXDE-pi
@@ -51,11 +50,12 @@ id = 0123456789
 ```
 + set up your raspberry pi to start into "desktop (with autologin)" - can be done in command line `sudo raspi-config` or in Raspbian (Preferences -> Raspberry Pi Configuration | Boot: to desktop | Autologin: Login as user 'pi' )
 
+(Hint: an error in the autostart or script is hard to identify since error messages are not shown. Double-check python file if dep_moni does not start even though you did everything right with autostart)
 
 ## Known Issues
 
 + long start time
-+ 
++ dektop visible at startup
 
 ## Based on
 
