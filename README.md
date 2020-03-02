@@ -2,7 +2,8 @@
 
 ## Description
 
-I usually just left the house without checking the schedule. To avoid running, missing busses, avoiding waiting in the cold, I needed an easy way to check the departure times of Västtrafik's busses at my stop before leaving the house. Since I can use busses in both directions to get to the center, the monitor shows the (next 3) departures for both directions. An "energy saving socket" is used to disconnect the raspberry pi from power after a certain time, since the display glows in bright white after shutting down the pi.
+I usually just left the house without checking the schedule. To avoid running, missing busses, waiting in the cold, I needed an easy way to check the departure times of Västtrafik's busses at my stop before leaving the house. Since I can use busses in both directions to get to the center, the monitor shows the (next 3) departures for both directions. An "energy saving socket" is used to disconnect the raspberry pi from power after a certain time, since the display glows in bright white after shutting down the pi. 
+The monitor starts at start up of the raspberry pi and can be shut down with a click (touch screen FTW) on shut down button.
 
 ## Hardware
 
@@ -57,6 +58,7 @@ id = 0123456789
 
 + long start time
 + empty desktop visible at startup
++ no automatic or time-based shutdown
 
 ## Based on
 
