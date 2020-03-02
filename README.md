@@ -2,7 +2,7 @@
 
 ## Description
 
-I usually just left the house without checking the schedule. To avoid running, missing busses, avoiding waiting in the cold, I needed an easy way to check the departure times of Västtrafik's busses at my stop before leaving the house. Since I can use busses in both directions to get to the center, the monitor shows the (next 3) departures for both directions. An "energy saving socket" was included to disconnect the raspberry pi from power after a certain time, since the display glows in bright white after shutting down the pi.
+I usually just left the house without checking the schedule. To avoid running, missing busses, avoiding waiting in the cold, I needed an easy way to check the departure times of Västtrafik's busses at my stop before leaving the house. Since I can use busses in both directions to get to the center, the monitor shows the (next 3) departures for both directions. An "energy saving socket" is used to disconnect the raspberry pi from power after a certain time, since the display glows in bright white after shutting down the pi.
 
 ## Hardware
 
@@ -12,13 +12,13 @@ I usually just left the house without checking the schedule. To avoid running, m
 + LEGO case
 
 ## API
-Departure monitor uses data from [Västtrafik's public API](https://developer.vasttrafik.se). After registration you can get your key & secret for authentication. Don't forget to "prenumera" your app for "reseplaneraren".
+Departure monitor uses data from [Västtrafik's public API](https://developer.vasttrafik.se). After (free) registration & creation of an app, you'll receive your key & secret for authentication. Don't forget to "prenumera" your app to "reseplaneraren".
 
 ## Installation
 
 ### System
 
-+ Raspbian with desktop
+Raspbian with desktop and working Wifi
 
 ### Screen
 
@@ -27,7 +27,7 @@ Instructions: http://www.lcdwiki.com/3.5inch_RPi_Display
 ### Departure Monitor
 
 + clone: `git clone https://github.com/HarFis/departure-monitor.git`
-+ clone inside the departure monitor folder: `https://github.com/axelniklasson/PyTrafik.git``
++ clone inside the departure monitor folder: `git clone https://github.com/axelniklasson/PyTrafik.git`
 + in main folder create `login.ini` in the following format with key & secret from Västtrafik and your busstop id:
 ```
 [login]
@@ -55,7 +55,7 @@ id = 0123456789
 ## Known Issues
 
 + long start time
-+ dektop visible at startup
++ empty desktop visible at startup
 
 ## Based on
 
