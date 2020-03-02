@@ -29,7 +29,7 @@ Instructions: http://www.lcdwiki.com/3.5inch_RPi_Display
 + clone: `git clone https://github.com/HarFis/departure-monitor.git`
 + clone inside the departure monitor folder: `git clone https://github.com/axelniklasson/PyTrafik.git`
 [Python wrapper of Västtrafik's journey planner REST API by [Axel Niklasson](https://github.com/axelniklasson/PyTrafik)]
-+ in main folder create `login.ini` in the following format with key & secret from Västtrafik and your busstop id:
++ in `departure-monitor` folder create `login.ini` in the following format with key & secret from Västtrafik and your busstop id:
 ```
 [login]
 key = 1234567890
