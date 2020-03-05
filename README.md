@@ -1,7 +1,7 @@
-# Personal Departure Monitor
+# Personal Departure Monitor - DEP MONI
+![dep_moni](https://user-images.githubusercontent.com/43996812/76020907-99156900-5f24-11ea-9d13-3b42ce24cd91.jpg)
 
 ## Description
-![dep_moni](https://user-images.githubusercontent.com/43996812/76018984-4e462200-5f21-11ea-8335-d9842efee6e1.jpg | width=150px)
 
 I usually just left the house without checking the schedule. To avoid running, missing busses, waiting in the cold, I needed an easy way to check the departure times of Västtrafik's busses at my stop before leaving the house. Since I can use busses in both directions to get to the center, the monitor shows the (next 3) departures for both directions. An "energy saving socket" is used to disconnect the raspberry pi from power after a certain time, since the display glows in bright white after shutting down the raspberry pi. 
 The monitor starts at start-up of the raspberry pi and can be shut down with a click (touch screen FTW) on shut-down button.
