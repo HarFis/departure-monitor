@@ -64,11 +64,14 @@ id = 90123456789
 
 (Hint: an error in the autostart or script is hard to identify since error messages are not shown. Double-check python file if dep_moni does not start even though you did everything right with autostart)
 
-## Known Issues
+## Known Issues & next steps
 
 + long start time
 + empty Respbian desktop visible at startup
 + no automatic or time-based shutdown
++ miscalculation of minutes to leave when busses are late (appear as '60+')
++ make more use of remaining space on the screen (weather info, etc)
++ make more use of the touch screen
 
 ## Based on
 
