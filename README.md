@@ -3,18 +3,18 @@
 
 ## Description
 
-I usually just left the house without checking the schedule. To avoid running, missing busses, waiting in the cold, I needed an easy way to check the departure times of Västtrafik's busses at my stop before leaving the house. Since I can use busses in both directions to get to the center, the monitor shows the (next 3) departures for both directions. An "energy saving socket" is used to disconnect the raspberry pi from power after a certain time, since the display glows in bright white after shutting down the raspberry pi. 
-The monitor starts at start-up of the raspberry pi and can be shut down with a click (touch screen FTW) on shut-down button.
+I usually just left the house without checking the schedule. To avoid running, missing busses, waiting in the cold, I needed an easy way to check the departure times of Västtrafik's busses at my stop before leaving the house. Since I can use busses in both directions to get to the center, the monitor shows the (next 3) departures for both directions. An "energy saving socket" is used to disconnect the raspberry pi from power after a certain time, since the display glows in bright white after shutting it down. 
+DEP MONI starts at start-up of the raspberry pi and can be shut down with a click (touch screen FTW) on the shut-down button.
 
 ## Hardware
 
 + Raspberry Pi (Model B+) with an USB Wifi dongle
 + 3.5" LCD (touch screen) display, ca. 19 EUR
-+ ANSMANN 5024063 "energy saving socket", with time controlled countdown, ca. 12 EUR
-+ LEGO case
++ ANSMANN 5024063 "energy saving socket", with time controlled countdown disconnection, ca. 12 EUR
++ (LEGO case)
 
 ## API
-Departure monitor uses data from [Västtrafik's public API](https://developer.vasttrafik.se). After (free) registration & creation of an app, you'll receive your key & secret for authentication. Don't forget to "prenumera" your app to "Reseplaneraren v2".
+DEP MONI uses data from [Västtrafik's public API](https://developer.vasttrafik.se). After (free) registration & creation of an app, you'll receive your key & secret for authentication. Don't forget to "prenumera" your app to "Reseplaneraren v2".
 
 To find your (bus) stop's ID (after you created your app in Västtrafik's developer portal):
 + Go to prenumeration -> Reseplaneraren v2 -> Tab: API Console
@@ -22,7 +22,7 @@ To find your (bus) stop's ID (after you created your app in Västtrafik's develo
 + Type your stop's name in the "input" field -> Press button "Try out"
 + It will show you the matching stop details (among other the ID).
 
-If you get an 401 error, you have to re-new your token. 
+If you get an 401 error, you need to re-new your token. 
 (Mina applikationer-> Hantera nyckler -> copy & run in terminal the first "curl command" below the keys -> copy the token it returns. Go back to API Console, paste/replace the token and then try it again.)
 
 ## Installation
@@ -50,9 +50,9 @@ id = 90123456789
 ```
 
 ### Autostart
-+ Mark the script as executable: `chmod +x dep_moni.py`
-+ follow this instructions (I used method 2): https://www.raspberrypi-spy.co.uk/2014/05/how-to-autostart-apps-in-rasbian-lxde-desktop/ (correct path: /home/pi/.config/lxsession/LXDE-pi/)
-+ `autostart` file: add or modify so it looks similar to this:
++ mark the script as executable: `chmod +x dep_moni.py`
++ follow these instructions (I used method 2): https://www.raspberrypi-spy.co.uk/2014/05/how-to-autostart-apps-in-rasbian-lxde-desktop/ (correct path: /home/pi/.config/lxsession/LXDE-pi/)
++ add or modify the `autostart` file so that it looks similar to/like this:
 ```
 @lxpanel --profile LXDE-pi
 @pcmanfm --desktop --profile LXDE-pi
@@ -62,9 +62,9 @@ id = 90123456789
 ```
 + set up your raspberry pi to start into "desktop (with autologin)" - can be done in command line `sudo raspi-config` or in Raspbian (Preferences -> Raspberry Pi Configuration | Boot: to desktop | Autologin: Login as user 'pi')
 
-+ to hide the mouse point on the screen install unclutter (`sudo apt-get install unclutter`) and add `@unclutter -idle 0` in the autostart file (between `@point-rpi` and `@/usr/bin/python3 ...`)
++ to hide the mouse pointer on the screen install unclutter (`sudo apt-get install unclutter`) and add `@unclutter -idle 0` in the autostart file (between `@point-rpi` and `@/usr/bin/python3 ...`)
 
-(Hint: an error in the autostart or script is hard to identify since error messages are not shown. Double-check python file if dep_moni does not start even though you did everything right with autostart)
+(Note: an error in the autostart or script is hard to identify since error messages are not shown. If DEP MONI does not start even though you did everything right with autostart, double-check the python file, paths, environmental file (login.ini) etc. )
 
 ## Known Issues & next steps
 
