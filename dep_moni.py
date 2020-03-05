@@ -1,3 +1,5 @@
+# Based on VasttraPi (https://github.com/platisd/vasttraPi/blob/master/departures.py) by Platisd
+
 from tkinter import Tk, Label, Button, N, S, E, W, Frame
 import tkinter.font as tkFont
 import tkinter.ttk as ttkSep
@@ -129,7 +131,7 @@ def extractDepartures(track_side):
             rtTimeExist = True if 'rtTime' in saterigatan_db[x] else False
             # TODO: marking real-time vs schedule time times (not used atm)
             rtOrPt = 'RT' if rtTimeExist==True else 'PT'
-            departureTime = saterigatan_db[x]['rtTime'] if rtTimeExist else saterigatan_db[x]['time']
+            departureTime = saterigatan_db[x]['rtTime'] if rtTimeExist else saterigatan_db[x]['time'+' !']
             # TODO: parsing should have try-except
             minutesToLeave = (int)((datetime.strptime(departureTime, "%H:%M") - datetime.strptime(now, "%H:%M")).total_seconds() / 60)
             # meaning that the next departure time is on the next day
