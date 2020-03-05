@@ -51,7 +51,7 @@ id = 90123456789
 
 ### Autostart
 + Mark the script as executable: `chmod +x dep_moni.py`
-+ follow this instructions (I used method 2): https://www.raspberrypi-spy.co.uk/2014/05/how-to-autostart-apps-in-rasbian-lxde-desktop/
++ follow this instructions (I used method 2): https://www.raspberrypi-spy.co.uk/2014/05/how-to-autostart-apps-in-rasbian-lxde-desktop/ (correct path: /home/pi/.config/lxsession/LXDE-pi/)
 + `autostart` file: add or modify so it looks similar to this:
 ```
 @lxpanel --profile LXDE-pi
@@ -60,7 +60,9 @@ id = 90123456789
 @/usr/bin/python3 /home/pi/departure-monitor/dep_moni.py
 @xscreensaver -no-splash
 ```
-+ set up your raspberry pi to start into "desktop (with autologin)" - can be done in command line `sudo raspi-config` or in Raspbian (Preferences -> Raspberry Pi Configuration | Boot: to desktop | Autologin: Login as user 'pi' )
++ set up your raspberry pi to start into "desktop (with autologin)" - can be done in command line `sudo raspi-config` or in Raspbian (Preferences -> Raspberry Pi Configuration | Boot: to desktop | Autologin: Login as user 'pi')
+
++ to hide the mouse point on the screen install unclutter (`sudo apt-get install unclutter`) and add `@unclutter -idle 0` in the autostart file (between `@point-rpi` and `@/usr/bin/python3 ...`)
 
 (Hint: an error in the autostart or script is hard to identify since error messages are not shown. Double-check python file if dep_moni does not start even though you did everything right with autostart)
 
