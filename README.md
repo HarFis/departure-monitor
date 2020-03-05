@@ -1,5 +1,5 @@
-# Personal Departure Monitor - DEP MONI
-![dep_moni](https://user-images.githubusercontent.com/43996812/76020907-99156900-5f24-11ea-9d13-3b42ce24cd91.jpg)
+# DEP MONI - Personal Departure Monitor for Västtrafik
+![dep_moni](https://user-images.githubusercontent.com/43996812/76021221-28bb1780-5f25-11ea-85be-2f3a824f114f.jpg)
 
 ## Description
 
@@ -14,12 +14,12 @@ The monitor starts at start-up of the raspberry pi and can be shut down with a c
 + LEGO case
 
 ## API
-Departure monitor uses data from [Västtrafik's public API](https://developer.vasttrafik.se). After (free) registration & creation of an app, you'll receive your key & secret for authentication. Don't forget to "prenumera" your app to "reseplaneraren".
+Departure monitor uses data from [Västtrafik's public API](https://developer.vasttrafik.se). After (free) registration & creation of an app, you'll receive your key & secret for authentication. Don't forget to "prenumera" your app to "Reseplaneraren v2".
 
-To find your busstop's ID after you created your app at Västtrafik's developer portal:
+To find your (bus) stop's ID (after you created your app in Västtrafik's developer portal):
 + Go to prenumeration -> Reseplaneraren v2 -> Tab: API Console
 + Choose "location" -> get location.name. 
-+ Type your stop in the "input" field -> Press button "Try out"
++ Type your stop's name in the "input" field -> Press button "Try out"
 + It will show you the matching stop details (among other the ID).
 
 If you get an 401 error, you have to re-new your token. 
@@ -67,7 +67,7 @@ id = 90123456789
 ## Known Issues
 
 + long start time
-+ empty Respian desktop visible at startup
++ empty Respbian desktop visible at startup
 + no automatic or time-based shutdown
 
 ## Based on
