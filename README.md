@@ -75,6 +75,6 @@ id = 90123456789
 + make more use of remaining space on the screen (weather info, etc)
 + make more use of the touch screen
 
-## Based on
+## Inspired by & based on 
 
-Dimitris Platis VasttraPi: https://github.com/platisd/vasttraPi
+VasttraPi by Dimitris Platis (published under MIT license): https://github.com/platisd/vasttraPi
