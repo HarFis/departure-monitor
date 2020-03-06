@@ -1,7 +1,7 @@
 # DEP MONI - Personal departure monitor
 # 
-# Based on VasttraPi (https://github.com/platisd/vasttraPi/blob/master/departures.py) by Dimitris Platis.
-# The structure is widely borrowed from VasttraPi.
+# Based on VasttraPi (https://github.com/platisd/vasttraPi/blob/master/departures.py) by Dimitris Platis (published under MIT license).
+# The structure & function is widely borrowed from VasttraPi.
 
 from tkinter import Tk, Label, Button, N, S, E, W, Frame
 import tkinter.font as tkFont
