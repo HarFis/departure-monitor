@@ -71,7 +71,7 @@ id = 90123456789
 + long start time
 + empty Respbian desktop visible at startup
 + no automatic or time-based shutdown
-+ miscalculation of minutes to leave when busses are late (appear as '60+')
++ miscalculation of minutes to leave when busses are late (appear as '60+') - seems to be a problem with updating the time that only happens on the Raspberry
 + make more use of remaining space on the screen (weather info, etc)
 + make more use of the touch screen
 
